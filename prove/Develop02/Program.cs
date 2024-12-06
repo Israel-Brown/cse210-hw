@@ -1,4 +1,4 @@
-using ScriptureApp;  // Ensure this matches your namespace
+using ScriptureApp;  // Make sure this matches the namespace of your Scripture class
 
 class Program
 {
@@ -10,13 +10,15 @@ class Program
             Scripture scripture = Scripture.LoadFromFile(filePath);
 
             Console.WriteLine("Scripture memorization program");
+
             while (true)
             {
                 Console.Clear();
                 Console.WriteLine(scripture.ToString());
 
-                // Display progress
-                int progress = scripture.GetProgress(); // Fixed: Added parentheses
+                // Get the progress correctly
+                int progress = scripture.GetProgress();  // Call the method
+
                 Console.WriteLine($"Progress: {progress}%");
 
                 if (scripture.IsCompletelyHidden())
@@ -31,10 +33,10 @@ class Program
                 switch (choice)
                 {
                     case 'H':
-                        scripture.HideWords(3);
+                        scripture.HideWords(3);  // Assuming HideWords accepts an int argument
                         break;
                     case 'R':
-                        scripture.RevealHint(3);
+                        scripture.RevealHint(3);  // Assuming RevealHint accepts an int argument
                         break;
                     case 'Q':
                         return;
