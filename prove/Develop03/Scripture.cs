@@ -57,14 +57,18 @@ public class Scripture
 
         foreach (var line in lines)
         {
-            // Skip empty lines
-            if (string.IsNullOrWhiteSpace(line)) continue;
+            // Skip empty lines or lines without the delimiter
+            if (string.IsNullOrWhiteSpace(line) || !line.Contains(":"))
+            {
+                Console.WriteLine($"Skipping invalid or empty line: {line}");
+                continue;
+            }
 
             // Split the line into reference and text
-            var parts = line.Split(':');
+            var parts = line.Split(new[] { ':' }, 2); // Split into two parts at the first colon
 
-            // Ensure the line contains exactly two parts
-            if (parts.Length != 2)
+            // Ensure we have both reference and text parts
+            if (parts.Length < 2)
             {
                 Console.WriteLine($"Skipping malformed line: {line}");
                 continue;
@@ -72,6 +76,13 @@ public class Scripture
 
             var reference = parts[0].Trim();
             var text = parts[1].Trim();
+
+            // Skip lines with empty reference or text
+            if (string.IsNullOrEmpty(reference) || string.IsNullOrEmpty(text))
+            {
+                Console.WriteLine($"Skipping line with missing reference or text: {line}");
+                continue;
+            }
 
             // Create a Scripture object and add it to the list
             scriptures.Add(new Scripture(new Reference(reference), text));
