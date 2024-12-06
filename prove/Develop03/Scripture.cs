@@ -97,6 +97,53 @@ public class Scripture
     // String representation of the scripture
     public override string ToString()
     {
+<<<<<<< HEAD
         return $"{_reference.ToString()} {string.Join(' ', _words)}";
+=======
+        var scriptures = new List<Scripture>();
+
+        if (!File.Exists(filePath))
+        {
+            Console.WriteLine($"Error: File not found at {filePath}");
+            return scriptures;
+        }
+
+        var lines = File.ReadAllLines(filePath);
+
+        foreach (var line in lines)
+        {
+            // Skip empty lines or lines without the delimiter
+            if (string.IsNullOrWhiteSpace(line) || !line.Contains(":"))
+            {
+                Console.WriteLine($"Skipping invalid or empty line: {line}");
+                continue;
+            }
+
+            // Split the line into reference and text
+            var parts = line.Split(new[] { ':' }, 2); // Split into two parts at the first colon
+
+            // Ensure we have both reference and text parts
+            if (parts.Length < 2)
+            {
+                Console.WriteLine($"Skipping malformed line: {line}");
+                continue;
+            }
+
+            var reference = parts[0].Trim();
+            var text = parts[1].Trim();
+
+            // Skip lines with empty reference or text
+            if (string.IsNullOrEmpty(reference) || string.IsNullOrEmpty(text))
+            {
+                Console.WriteLine($"Skipping line with missing reference or text: {line}");
+                continue;
+            }
+
+            // Create a Scripture object and add it to the list
+            scriptures.Add(new Scripture(new Reference(reference), text));
+        }
+
+        return scriptures;
+>>>>>>> fa0cda295d9d219be0ef3c0e48fa7872bdda3a30
     }
 }
