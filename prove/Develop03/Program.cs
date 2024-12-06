@@ -1,43 +1,67 @@
-using System;
-using System.Collections.Generic;
+using System;  // For basic input/output operations
+using ScriptureApp;  // Ensure this matches the namespace of the Scripture class
 
-class Program
+namespace Develop03
 {
-    static void Main(string[] args)
+    class Program
     {
-        Console.Clear();
-        Console.WriteLine("Welcome to the Scripture Memorizer!");
-
-        // Load scriptures from file
-        var scriptures = Scripture.LoadFromFile("scriptures.txt");
-        Random random = new Random();
-        var scripture = scriptures[random.Next(scriptures.Count)];
-
-        Console.WriteLine("Press Enter to hide words, type 'hint' for a hint, or 'quit' to exit.\n");
-
-        while (true)
+        static void Main(string[] args)
         {
-            Console.Clear();
-            Console.WriteLine(scripture);
-            Console.WriteLine($"\nProgress: {scripture.GetProgress():F2}% of words hidden.");
-
-            if (scripture.IsCompletelyHidden())
+            try
             {
-                Console.WriteLine("\nCongratulations! You've hidden all the words.");
-                break;
+                // File path for loading the scripture file
+                string filePath = "scriptures.txt";  
+                
+                // Load the scripture (ensure the LoadFromFile method exists in your Scripture class)
+                Scripture scripture = Scripture.LoadFromFile(filePath);  
+
+                Console.WriteLine("Scripture Memorization Program");
+
+                while (true)
+                {
+                    Console.Clear();
+
+                    // Display the scripture
+                    Console.WriteLine(scripture.ToString());
+
+                    // Get progress using the method correctly (with parentheses)
+                    int progress = scripture.GetProgress();
+
+                    Console.WriteLine($"Progress: {progress}%");
+
+                    // Check if the scripture is completely hidden
+                    if (scripture.IsCompletelyHidden())
+                    {
+                        Console.WriteLine("You have memorized the scripture!");
+                        break;
+                    }
+
+                    Console.WriteLine("Press 'H' to hide words, 'R' to reveal hints, or 'Q' to quit:");
+                    char choice = char.ToUpper(Console.ReadKey(true).KeyChar);
+
+                    switch (choice)
+                    {
+                        case 'H':
+                            // Hide 3 words (ensure HideWords expects an integer argument)
+                            scripture.HideWords(3);
+                            break;
+                        case 'R':
+                            // Reveal 3 hints (ensure RevealHint expects an integer argument)
+                            scripture.RevealHint(3);
+                            break;
+                        case 'Q':
+                            return;  // Exit the program
+                        default:
+                            Console.WriteLine("Invalid choice. Please try again.");
+                            break;
+                    }
+                }
             }
-
-            Console.Write("\nPress Enter to hide words, type 'hint' for a hint, or 'quit' to exit: ");
-            string input = Console.ReadLine();
-
-            if (input.ToLower() == "quit")
-                break;
-            else if (input.ToLower() == "hint")
-                scripture.RevealHint();
-            else
-                scripture.HideRandomWords(3);
+            catch (Exception ex)
+            {
+                // Display any errors that occur
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
         }
-
-        Console.WriteLine("\nThank you for using the Scripture Memorizer!");
     }
 }
