@@ -1,4 +1,4 @@
-using System;
+using ScriptureApp;  // Ensure this matches your namespace
 
 class Program
 {
@@ -9,15 +9,15 @@ class Program
             string filePath = "scriptures.txt"; // Path to the scripture file
             Scripture scripture = Scripture.LoadFromFile(filePath);
 
-            Console.WriteLine("Scripture Memorization Program");
+            Console.WriteLine("Scripture memorization program");
             while (true)
             {
                 Console.Clear();
-                scripture.Display();
+                Console.WriteLine(scripture.ToString());
 
                 // Display progress
-                double progress = scripture.GetProgress();
-                Console.WriteLine($"Progress: {progress:F2}%");
+                int progress = scripture.GetProgress(); // Fixed: Added parentheses
+                Console.WriteLine($"Progress: {progress}%");
 
                 if (scripture.IsCompletelyHidden())
                 {
@@ -34,7 +34,7 @@ class Program
                         scripture.HideWords(3);
                         break;
                     case 'R':
-                        scripture.RevealWords(3);
+                        scripture.RevealHint(3);
                         break;
                     case 'Q':
                         return;
