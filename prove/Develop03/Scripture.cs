@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
-namespace ScriptureApp // Ensure the correct namespace
+namespace ScriptureApp
 {
     public class Scripture
     {
@@ -12,9 +13,7 @@ namespace ScriptureApp // Ensure the correct namespace
         public Scripture(string reference, string text)
         {
             _reference = reference;
-            _words = text.Split(' ')
-                         .Select(wordText => new Word(wordText))
-                         .ToList();
+            _words = text.Split(' ').Select(wordText => new Word(wordText)).ToList();
         }
 
         public void Display()
@@ -37,7 +36,7 @@ namespace ScriptureApp // Ensure the correct namespace
 
             foreach (var word in wordsToHide)
             {
-                word.Hide(); // Use the Hide method
+                word.Hide();
             }
         }
 
@@ -50,21 +49,36 @@ namespace ScriptureApp // Ensure the correct namespace
 
             foreach (var word in wordsToReveal)
             {
-                word.Reveal(); // Use the Reveal method
+                word.Reveal();
             }
         }
 
         public double GetProgress()
         {
             int hiddenCount = _words.Count(word => word.IsHidden);
-            return (double)hiddenCount / _words.Count * 100; // Percentage of words hidden
+            return (double)hiddenCount / _words.Count * 100;
+        }
+
+        public void RevealHint()
+        {
+            foreach (var word in _words.Where(word => word.IsHidden))
+            {
+                Console.WriteLine($"Hint: The first letter of the word is {word.Text[0]}.");
+                break;
+            }
         }
 
         public static Scripture LoadFromFile(string filePath)
         {
-            // You can implement loading scripture from file here
-            // For now, return a dummy example scripture for testing purposes
-            return new Scripture("John 3:16", "For God so loved the world that he gave his only begotten Son.");
+            var scriptures = new List<Scripture>();
+            foreach (var line in File.ReadLines(filePath))
+            {
+                var parts = line.Split('|');
+                scriptures.Add(new Scripture(parts[0], parts[1]));
+            }
+
+            Random rand = new Random();
+            return scriptures[rand.Next(scriptures.Count)];
         }
     }
 }

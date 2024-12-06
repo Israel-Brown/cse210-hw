@@ -1,5 +1,6 @@
-using System;  // For basic input/output operations
-using ScriptureApp;  // Ensure this matches the namespace of the Scripture class
+using System;
+using System.Diagnostics;
+using ScriptureApp; 
 
 namespace Develop03
 {
@@ -9,32 +10,32 @@ namespace Develop03
         {
             try
             {
-                // File path for loading the scripture file
-                string filePath = "scriptures.txt";  
-                
-                // Load the scripture (ensure the LoadFromFile method exists in your Scripture class)
-                Scripture scripture = Scripture.LoadFromFile(filePath);  
+                string filePath = "scriptures.txt";
+                Scripture scripture = Scripture.LoadFromFile(filePath);
 
                 Console.WriteLine("Scripture Memorization Program");
+
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
 
                 while (true)
                 {
                     Console.Clear();
-
-                    // Display the scripture
                     Console.WriteLine(scripture.ToString());
 
-                    // Get progress using the method correctly (with parentheses)
-                    int progress = (int)scripture.GetProgress();  // Explicit cast to int to fix CS0266 error
-
+                    int progress = (int)scripture.GetProgress();
                     Console.WriteLine($"Progress: {progress}%");
 
-                    // Check if the scripture is completely hidden
                     if (scripture.IsCompletelyHidden())
                     {
-                        Console.WriteLine("You have memorized the scripture!");
+                        stopwatch.Stop();
+                        Console.WriteLine($"You have memorized the scripture in {stopwatch.ElapsedMilliseconds / 1000} seconds!");
                         break;
                     }
+
+                    if (progress >= 75) Console.WriteLine("Great job! You're almost there!");
+                    else if (progress >= 50) Console.WriteLine("You're doing well, keep it up!");
+                    else Console.WriteLine("You're just getting started, stay focused!");
 
                     Console.WriteLine("Press 'H' to hide words, 'R' to reveal hints, or 'Q' to quit:");
                     char choice = char.ToUpper(Console.ReadKey(true).KeyChar);
@@ -42,16 +43,13 @@ namespace Develop03
                     switch (choice)
                     {
                         case 'H':
-                            // Hide 3 words (ensure HideWords expects an integer argument)
                             scripture.HideWords(3);
                             break;
                         case 'R':
-                            // Since RevealHint is not defined, you may want to replace it with something else
-                            // Assuming you want to show a hint in some way, you could implement it here
-                            Console.WriteLine("RevealHint is not implemented yet.");
+                            scripture.RevealHint();
                             break;
                         case 'Q':
-                            return;  // Exit the program
+                            return;
                         default:
                             Console.WriteLine("Invalid choice. Please try again.");
                             break;
@@ -60,7 +58,6 @@ namespace Develop03
             }
             catch (Exception ex)
             {
-                // Display any errors that occur
                 Console.WriteLine($"An error occurred: {ex.Message}");
             }
         }
