@@ -14,32 +14,36 @@ public class Scripture
         _words = text.Split(' ').Select(word => new Word(word)).ToList();
     }
 
-    public static List<Scripture> LoadFromFile(string filePath)
+public static List<Scripture> LoadFromFile(string filePath)
+{
+    var scriptures = new List<Scripture>();
+    var lines = File.ReadAllLines(filePath);
+
+    foreach (var line in lines)
     {
-        var scriptures = new List<Scripture>();
-        var lines = File.ReadAllLines(filePath);
+        // Skip empty lines
+        if (string.IsNullOrWhiteSpace(line)) continue;
 
-        foreach (var line in lines)
+        // Split the line into reference and text
+        var parts = line.Split(':');
+
+        // Ensure the line contains exactly two parts
+        if (parts.Length != 2)
         {
-            // Expected format: "Book Chapter:Verse-OptionalVerse: Scripture Text"
-            var parts = line.Split(':', 2);
-            var referenceParts = parts[0].Split(' ');
-            string book = referenceParts[0];
-            string chapterAndVerses = referenceParts[1];
-
-            string[] verseRange = chapterAndVerses.Split('-');
-            int chapter = int.Parse(verseRange[0].Split(':')[0]);
-            int verseStart = int.Parse(verseRange[0].Split(':')[1]);
-            int? verseEnd = verseRange.Length > 1 ? int.Parse(verseRange[1]) : null;
-
-            var reference = new Reference(book, chapter, verseStart, verseEnd);
-            var scriptureText = parts[1].Trim();
-
-            scriptures.Add(new Scripture(reference, scriptureText));
+            Console.WriteLine($"Skipping malformed line: {line}");
+            continue;
         }
 
-        return scriptures;
+        var reference = parts[0].Trim();
+        var text = parts[1].Trim();
+
+        // Create a Scripture object and add it to the list
+        scriptures.Add(new Scripture(new Reference(reference), text));
     }
+
+    return scriptures;
+}
+
 
     public void HideRandomWords(int count)
     {
