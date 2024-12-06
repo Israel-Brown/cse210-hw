@@ -9,15 +9,15 @@ class Program
             string filePath = "scriptures.txt"; // Path to the scripture file
             Scripture scripture = Scripture.LoadFromFile(filePath);
 
-            Console.WriteLine("Scripture memorization program");
+            Console.WriteLine("Scripture Memorization Program");
             while (true)
             {
                 Console.Clear();
-                Console.WriteLine(scripture.ToString());
+                scripture.Display();
 
                 // Display progress
-                int progress = scripture.GetProgress(); // Fixed: Added parentheses
-                Console.WriteLine($"Progress: {progress}%");
+                double progress = scripture.GetProgress();
+                Console.WriteLine($"Progress: {progress:F2}%");
 
                 if (scripture.IsCompletelyHidden())
                 {
@@ -34,7 +34,7 @@ class Program
                         scripture.HideWords(3);
                         break;
                     case 'R':
-                        scripture.RevealHint(3);
+                        scripture.RevealWords(3);
                         break;
                     case 'Q':
                         return;

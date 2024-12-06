@@ -1,35 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-
-public class Word
-{
-    public string Text { get; private set; }
-    public bool IsHidden { get; private set; }
-
-    public Word(string text)
-    {
-        Text = text;
-        IsHidden = false; // Default to not hidden
-    }
-
-    // Method to hide the word
-    public void Hide()
-    {
-        IsHidden = true;
-    }
-
-    // Method to reveal the word
-    public void Reveal()
-    {
-        IsHidden = false;
-    }
-
-    public override string ToString()
-    {
-        return IsHidden ? new string('_', Text.Length) : Text;
-    }
-}
 
 public class Scripture
 {
@@ -64,7 +36,7 @@ public class Scripture
 
         foreach (var word in wordsToHide)
         {
-            word.Hide(); // Use the Hide method
+            word.Hide();
         }
     }
 
@@ -77,13 +49,27 @@ public class Scripture
 
         foreach (var word in wordsToReveal)
         {
-            word.Reveal(); // Use the Reveal method
+            word.Reveal();
         }
     }
 
     public double GetProgress()
     {
         int hiddenCount = _words.Count(word => word.IsHidden);
-        return (double)hiddenCount / _words.Count * 100; // Percentage of words hidden
+        return (double)hiddenCount / _words.Count * 100;
+    }
+
+    public static Scripture LoadFromFile(string filePath)
+    {
+        if (!File.Exists(filePath))
+            throw new FileNotFoundException("Scripture file not found.");
+
+        var lines = File.ReadAllLines(filePath);
+        if (lines.Length < 2)
+            throw new InvalidOperationException("Invalid file format.");
+
+        string reference = lines[0];
+        string text = string.Join(" ", lines.Skip(1));
+        return new Scripture(reference, text);
     }
 }

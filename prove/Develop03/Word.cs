@@ -1,29 +1,29 @@
-public class Word
+namespace ScriptureApp
 {
-    public string Text { get; private set; }
-    public bool IsHidden { get; private set; }
-    private string _hint;
-
-    public Word(string text)
+    public class Word
     {
-        Text = text;
-        IsHidden = false;
-        _hint = text[0] + new string('_', text.Length - 1); // First letter + underscores
-    }
+        public string Text { get; private set; }
+        public bool IsHidden { get; private set; }
 
-    public void Hide()
-    {
-        IsHidden = true;
-    }
+        public Word(string text)
+        {
+            Text = text;
+            IsHidden = false;
+        }
 
-    public void RevealFirstLetter()
-    {
-        IsHidden = false;
-        Text = _hint;
-    }
+        public void Hide()
+        {
+            IsHidden = true;
+        }
 
-    public override string ToString()
-    {
-        return IsHidden ? new string('_', Text.Length) : Text;
+        public void Reveal()
+        {
+            IsHidden = false;
+        }
+
+        public override string ToString()
+        {
+            return IsHidden ? new string('_', Text.Length) : Text;
+        }
     }
 }
