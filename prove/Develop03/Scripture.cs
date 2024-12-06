@@ -1,73 +1,53 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+
+public class Word
+{
+    public string Text { get; private set; }
+    public bool IsHidden { get; private set; }
+
+    public Word(string text)
+    {
+        Text = text;
+        IsHidden = false; // Default to not hidden
+    }
+
+    // Method to hide the word
+    public void Hide()
+    {
+        IsHidden = true;
+    }
+
+    // Method to reveal the word
+    public void Reveal()
+    {
+        IsHidden = false;
+    }
+
+    public override string ToString()
+    {
+        return IsHidden ? new string('_', Text.Length) : Text;
+    }
+}
 
 public class Scripture
 {
     private List<Word> _words;
-    private Reference _reference;
+    private string _reference;
 
-    public Scripture(Reference reference, string text)
+    public Scripture(string reference, string text)
     {
         _reference = reference;
-        _words = text.Split(' ').Select(word => new Word(word)).ToList();
+        _words = text.Split(' ')
+                     .Select(wordText => new Word(wordText))
+                     .ToList();
     }
 
-    public static Scripture LoadFromFile(string filePath)
+    public void Display()
     {
-        var lines = File.ReadAllLines(filePath);
-        if (lines.Length < 2)
-            throw new Exception("Invalid file format. Each scripture must have a reference and text.");
-
-        string referenceLine = lines[0];
-        string textLine = lines[1];
-
-        string[] referenceParts = referenceLine.Split(' ');
-        string book = referenceParts[0];
-        string[] verseParts = referenceParts[1].Split(':');
-        int chapter = int.Parse(verseParts[0]);
-        string[] verses = verseParts[1].Split('-');
-        int startVerse = int.Parse(verses[0]);
-        int? endVerse = verses.Length > 1 ? int.Parse(verses[1]) : null;
-
-        Reference reference = new Reference(book, chapter, startVerse, endVerse);
-        return new Scripture(reference, textLine);
-    }
-
-    public void HideWords(int numberOfWords)
-    {
-        var visibleWords = _words.Where(word => !word.IsHidden).ToList();
-        if (visibleWords.Count == 0) return;
-
-        Random random = new Random();
-        for (int i = 0; i < numberOfWords && visibleWords.Count > 0; i++)
-        {
-            int index = random.Next(visibleWords.Count);
-            visibleWords[index].IsHidden = true;
-            visibleWords.RemoveAt(index);
-        }
-    }
-
-    public void RevealHint(int numberOfWords)
-    {
-        var hiddenWords = _words.Where(word => word.IsHidden).ToList();
-        if (hiddenWords.Count == 0) return;
-
-        Random random = new Random();
-        for (int i = 0; i < numberOfWords && hiddenWords.Count > 0; i++)
-        {
-            int index = random.Next(hiddenWords.Count);
-            hiddenWords[index].IsHidden = false;
-            hiddenWords.RemoveAt(index);
-        }
-    }
-
-    public int GetProgress()
-    {
-        int totalWords = _words.Count;
-        int hiddenWords = _words.Count(word => word.IsHidden);
-        return (int)((hiddenWords / (double)totalWords) * 100);
+        Console.WriteLine(_reference);
+        Console.WriteLine(string.Join(" ", _words));
     }
 
     public bool IsCompletelyHidden()
@@ -75,8 +55,35 @@ public class Scripture
         return _words.All(word => word.IsHidden);
     }
 
-    public override string ToString()
+    public void HideWords(int count)
     {
-        return $"{_reference.ToString()} {string.Join(' ', _words)}";
+        Random random = new Random();
+        var wordsToHide = _words.Where(word => !word.IsHidden)
+                                .OrderBy(_ => random.Next())
+                                .Take(count);
+
+        foreach (var word in wordsToHide)
+        {
+            word.Hide(); // Use the Hide method
+        }
+    }
+
+    public void RevealWords(int count)
+    {
+        Random random = new Random();
+        var wordsToReveal = _words.Where(word => word.IsHidden)
+                                  .OrderBy(_ => random.Next())
+                                  .Take(count);
+
+        foreach (var word in wordsToReveal)
+        {
+            word.Reveal(); // Use the Reveal method
+        }
+    }
+
+    public double GetProgress()
+    {
+        int hiddenCount = _words.Count(word => word.IsHidden);
+        return (double)hiddenCount / _words.Count * 100; // Percentage of words hidden
     }
 }
