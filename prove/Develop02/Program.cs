@@ -4,45 +4,49 @@ class Program
 {
     static void Main(string[] args)
     {
-        Journal journal = new Journal();
-        bool isRunning = true;
-
-        while (isRunning)
+        try
         {
-            Console.WriteLine("\nJournal Program Menu:");
-            Console.WriteLine("1. Write a new entry");
-            Console.WriteLine("2. Display all entries");
-            Console.WriteLine("3. Save journal to a file (CSV)");
-            Console.WriteLine("4. Load journal from a file");
-            Console.WriteLine("5. Search entries");
-            Console.WriteLine("6. Exit");
-            Console.Write("Choose an option (1-6): ");
+            string filePath = "scriptures.txt"; // Path to the scripture file
+            Scripture scripture = Scripture.LoadFromFile(filePath);
 
-            string choice = Console.ReadLine();
-            switch (choice)
+            Console.WriteLine("Scripture memorization program");
+            while (true)
             {
-                case "1":
-                    journal.AddEntry();
+                Console.Clear();
+                Console.WriteLine(scripture.ToString());
+
+                // Display progress
+                int progress = scripture.GetProgress(); // Fixed: Added parentheses
+                Console.WriteLine($"Progress: {progress}%");
+
+                if (scripture.IsCompletelyHidden())
+                {
+                    Console.WriteLine("You have memorized the scripture!");
                     break;
-                case "2":
-                    journal.DisplayEntries();
-                    break;
-                case "3":
-                    journal.SaveToCsv();
-                    break;
-                case "4":
-                    journal.LoadFromCsv();
-                    break;
-                case "5":
-                    journal.SearchEntries();
-                    break;
-                case "6":
-                    isRunning = false;
-                    break;
-                default:
-                    Console.WriteLine("Invalid option. Please choose between 1 and 6.");
-                    break;
+                }
+
+                Console.WriteLine("Press 'H' to hide words, 'R' to reveal hints, or 'Q' to quit:");
+                char choice = char.ToUpper(Console.ReadKey(true).KeyChar);
+
+                switch (choice)
+                {
+                    case 'H':
+                        scripture.HideWords(3);
+                        break;
+                    case 'R':
+                        scripture.RevealHint(3);
+                        break;
+                    case 'Q':
+                        return;
+                    default:
+                        Console.WriteLine("Invalid choice. Please try again.");
+                        break;
+                }
             }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
         }
     }
 }
