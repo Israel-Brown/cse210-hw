@@ -25,7 +25,7 @@ namespace Develop03
                     Console.WriteLine(scripture.ToString());
 
                     // Get progress using the method correctly (with parentheses)
-                    int progress = scripture.GetProgress();
+                    int progress = (int)scripture.GetProgress();  // Explicit cast to int to fix CS0266 error
 
                     Console.WriteLine($"Progress: {progress}%");
 
@@ -46,8 +46,9 @@ namespace Develop03
                             scripture.HideWords(3);
                             break;
                         case 'R':
-                            // Reveal 3 hints (ensure RevealHint expects an integer argument)
-                            scripture.RevealHint(3);
+                            // Since RevealHint is not defined, you may want to replace it with something else
+                            // Assuming you want to show a hint in some way, you could implement it here
+                            Console.WriteLine("RevealHint is not implemented yet.");
                             break;
                         case 'Q':
                             return;  // Exit the program
