@@ -9,13 +9,13 @@ class Program
         Address address2 = new Address("456 Maple Rd", "Toronto", "ON", "Canada");
 
         // Create customers
-        Customer customer1 = new Customer("John Doe", address1);
-        Customer customer2 = new Customer("Jane Smith", address2);
+        Customer customer1 = new Customer("Average Joe", address1);
+        Customer customer2 = new Customer("Sally May", address2);
 
         // Create products
-        Product product1 = new Product("Widget", "W123", 10.50m, 3);
-        Product product2 = new Product("Gadget", "G456", 15.75m, 2);
-        Product product3 = new Product("Thingamajig", "T789", 7.25m, 4);
+        Product product1 = new Product("Air Fryer", "AF123", 10.50m, 3);
+        Product product2 = new Product("Bread Maker", "BM456", 15.75m, 2);
+        Product product3 = new Product("Crockpot", "CP789", 7.25m, 4);
 
         // Create orders
         Order order1 = new Order(customer1);
